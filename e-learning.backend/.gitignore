@@ -38,7 +38,10 @@ ScaffoldingReadMe.txt
 
 # Environment / secrets
 .env
-!.env.example
+.env.*
+!*.example
+**/appsettings.Development.json
+**/appsettings.Local.json
 
 # Others
 ~$*

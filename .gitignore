@@ -119,16 +119,18 @@ replay_pid*
 
 # --- Environment and Secrets ---
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+**/.env
+**/.env.*
 *.env
 *.pem
 *.key
 *.cert
+*.crt
 *.jks
 *.p12
+**/appsettings.Development.json
+**/appsettings.Local.json
 
 # --- Database & Docker ---
 **/docker/db_data/

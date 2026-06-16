@@ -39,7 +39,7 @@ export default function AuthGuard({ children }: Props) {
       return;
     }
 
-    const loginUrl = switchSubdomain('id', PATH_AUTH.login);
+    const loginUrl = LOGIN_DOMAIN;
     const requestedUrl = `${window.location.origin}${asPath}`;
 
     // On plain 'localhost', subdomains cannot share cookies.

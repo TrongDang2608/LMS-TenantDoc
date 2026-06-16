@@ -22,7 +22,6 @@ const nextConfig = {
     'react-pdf',
     'pdfjs-dist',
   ],
-  trailingSlash: true,
   env: {
     HOST_API_KEY: process.env.HOST_API_KEY,
     NEXT_PUBLIC_HOST_API_URL: process.env.NEXT_PUBLIC_HOST_API_URL,

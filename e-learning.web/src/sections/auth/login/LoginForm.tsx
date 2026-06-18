@@ -137,6 +137,7 @@ export default function LoginForm({
       }
 
       try {
+        setSession(accessToken, refreshToken ?? null);
         const identityRequest = RequestFactory.getRequest('IdentityRequest');
         const wsRes = await identityRequest.getWorkspaces(accessToken);
         
@@ -146,7 +147,6 @@ export default function LoginForm({
           : (wsData as any)?.items ?? (wsData as any)?.data ?? [];
         
         reduxDispatch(setWorkspaces(list));
-        setSession(accessToken, refreshToken ?? null);
 
         if (list.length === 1) {
           const ws = list[0];

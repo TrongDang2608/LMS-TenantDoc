@@ -20,7 +20,7 @@ export default class IdentityRequest extends BaseRequest {
    * - Không tồn tại → server trả lỗi generic
    */
   identify(identifier: string) {
-    return this.baseRequest.post<IdentifyResponse>(
+    return this.post<IdentifyResponse>(
       API_ENDPOINTS.identityIdentify,
       { identifier },
       { headers: { 'x-skip-auth': 'true' } }
@@ -33,8 +33,8 @@ export default class IdentityRequest extends BaseRequest {
    * Chỉ gọi sau khi đã có access_token (multi-tenant user).
    */
   getWorkspaces(accessToken?: string) {
-    const config = accessToken ? { headers: { Authorization: `Bearer ${accessToken}` } } : undefined;
-    return this.baseRequest.get<Workspace[]>(API_ENDPOINTS.identityWorkspaces, config);
+    const config = accessToken ? { headers: { Authorization: `Bearer ${accessToken}` } } : {};
+    return this.get<Workspace[]>(API_ENDPOINTS.identityWorkspaces, config);
   }
 
   /**
@@ -43,7 +43,7 @@ export default class IdentityRequest extends BaseRequest {
    * Backend yêu cầu RefreshToken trong body để rotate session.
    */
   selectWorkspace(tenantId: string, refreshToken: string) {
-    return this.baseRequest.post<SelectWorkspaceResponse>(
+    return this.post<SelectWorkspaceResponse>(
       API_ENDPOINTS.identityWorkspaceSelect(tenantId),
       { 
         refreshToken,

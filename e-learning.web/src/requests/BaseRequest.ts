@@ -8,50 +8,36 @@ class BaseRequest {
     this.baseRequest = axiosRequest;
   }
 
-  async get(url = '', params = {}, showNotification = true) {
+  async get<T = any>(url = '', config: any = {}, showNotification = true) {
     try {
-      const response = await this.baseRequest.get(`${url}`, {
-        params,
-      });
+      const response = await this.baseRequest.get<T>(`${url}`, config);
       return this._responseHandler(response, showNotification);
     } catch (error) {
       return this._errorHandler(error);
     }
   }
 
-  async getWithTimeout(url = '', params = {}, timeout = 0, showNotification = true) {
+  async put<T = any>(url = '', data = {}, config: any = {}, showNotification = true) {
     try {
-      const response = await this.baseRequest.get(`${url}`, {
-        params,
-        timeout,
-      });
+      const response = await this.baseRequest.put<T>(`${url}`, data, config);
       return this._responseHandler(response, showNotification);
     } catch (error) {
       return this._errorHandler(error);
     }
   }
 
-  async put(url = '', data = {}, showNotification = true) {
+  async post<T = any>(url = '', data = {}, config: any = {}, showNotification = true) {
     try {
-      const response = await this.baseRequest.put(`${url}`, data);
+      const response = await this.baseRequest.post<T>(`${url}`, data, config);
       return this._responseHandler(response, showNotification);
     } catch (error) {
       return this._errorHandler(error);
     }
   }
 
-  async post(url = '', data = {}, showNotification = true) {
+  async delete<T = any>(url = '', config: any = {}, showNotification = true) {
     try {
-      const response = await this.baseRequest.post(`${url}`, data);
-      return this._responseHandler(response, showNotification);
-    } catch (error) {
-      return this._errorHandler(error);
-    }
-  }
-
-  async delete(url = '', params = {}, showNotification = true) {
-    try {
-      const response = await this.baseRequest.delete(`${url}`, params);
+      const response = await this.baseRequest.delete<T>(`${url}`, config);
       return this._responseHandler(response, showNotification);
     } catch (error) {
       return this._errorHandler(error);

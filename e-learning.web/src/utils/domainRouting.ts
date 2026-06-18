@@ -118,7 +118,7 @@ export function buildPortalUrl({
 export function switchSubdomain(newSubdomain: string, path: string = ''): string {
   if (typeof window === 'undefined') return path;
 
-  const { hostname, port, protocol } = window.location;
+  const { hostname, port, protocol, host } = window.location;
   const safePath = path.startsWith('/') ? path : `/${path}`;
   const portSegment = port ? `:${port}` : '';
 

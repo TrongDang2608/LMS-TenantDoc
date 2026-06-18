@@ -101,9 +101,6 @@ export default function GuestGuard({ children }: Props) {
           targetUrl = `${targetUrl}${connector}accessToken=${accessToken}${refreshToken ? `&refreshToken=${refreshToken}` : ''}`;
         }
 
-        const currentUrl = new URL(window.location.href);
-        const nextUrl = new URL(targetUrl);
-        
         if (currentUrl.host === nextUrl.host && currentUrl.pathname === nextUrl.pathname) {
            return;
         }

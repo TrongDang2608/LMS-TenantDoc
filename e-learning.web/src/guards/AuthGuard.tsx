@@ -46,8 +46,12 @@ export default function AuthGuard({ children }: Props) {
     // Fallback to query param in that case to avoid redirect loops.
     const isPlainLocalhost = window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost');
 
-    if (isPlainLocalhost) {
-      const targetUrl = `${loginUrl}?returnTo=${encodeURIComponent(requestedUrl)}`;
+    const currentUrl = new URL(window.location.href);
+    const loginUrlObj = new URL(loginUrl, window.location.origin);
+    const isCrossDomain = currentUrl.host !== loginUrlObj.host;
+
+    if (isPlainLocalhost || isCrossDomain) {
+      const targetUrl = `${loginUrl}${loginUrl.includes('?') ? '&' : '?'}returnTo=${encodeURIComponent(requestedUrl)}`;
       if (window.location.href !== targetUrl) {
         window.location.replace(targetUrl);
       }

@@ -71,7 +71,16 @@ export function buildPortalUrl({
   const currentHostname = window.location.hostname;
   const currentPort = window.location.port;
 
-  const normalizedTargetHost = targetDomain ? stripSchemeAndPath(targetDomain) : '';
+  let normalizedTargetHost = targetDomain ? stripSchemeAndPath(targetDomain) : '';
+
+  // Safety Patch: If the backend returns the old hardcoded domain, force-convert it to the current ROOT_DOMAIN.
+  if (normalizedTargetHost && normalizedTargetHost.endsWith('.daihoc.io.vn')) {
+    const isCurrentlyOnVercel = typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app');
+    if (isCurrentlyOnVercel) {
+      const subdomain = normalizedTargetHost.split('.')[0];
+      normalizedTargetHost = `${subdomain}.${ROOT_DOMAIN}`;
+    }
+  }
 
   if (isConfiguredLocalHost(currentHostname)) {
     // Local dev subdomains (e.g. *.lvh.me:8081) are served over HTTP only.

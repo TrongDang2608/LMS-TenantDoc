@@ -53,7 +53,11 @@ export default function GuestGuard({ children }: Props) {
         if (!(isAdmin && isClientPath)) {
           removeReturnTo();
           let finalUrl = safeReturnTo;
-          if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost')) {
+          const currentUrl = new URL(window.location.href);
+          const targetUrlObj = new URL(finalUrl, window.location.origin);
+          const isCrossDomain = currentUrl.host !== targetUrlObj.host;
+
+          if (isCrossDomain || window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost')) {
             const accessToken = getToken();
             const refreshToken = getRefreshToken();
             const connector = finalUrl.includes('?') ? '&' : '?';
@@ -86,7 +90,11 @@ export default function GuestGuard({ children }: Props) {
           path: landingPath,
         });
 
-        if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost')) {
+        const currentUrl = new URL(window.location.href);
+        const nextUrl = new URL(targetUrl, window.location.origin);
+        const isCrossDomain = currentUrl.host !== nextUrl.host;
+
+        if (isCrossDomain || window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost')) {
           const accessToken = getToken();
           const refreshToken = getRefreshToken();
           const connector = targetUrl.includes('?') ? '&' : '?';

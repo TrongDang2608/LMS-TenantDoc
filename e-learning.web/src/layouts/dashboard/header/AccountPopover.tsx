@@ -98,7 +98,11 @@ export default function AccountPopover() {
         path: dashboardPath,
       });
 
-      if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost')) {
+      const currentUrl = new URL(window.location.href);
+      const nextUrl = new URL(targetUrl, window.location.origin);
+      const isCrossDomain = currentUrl.host !== nextUrl.host;
+
+      if (isCrossDomain || window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost')) {
         const connector = targetUrl.includes('?') ? '&' : '?';
         targetUrl = `${targetUrl}${connector}accessToken=${newAccessToken}${newRefreshToken ? `&refreshToken=${newRefreshToken}` : ''}`;
       }

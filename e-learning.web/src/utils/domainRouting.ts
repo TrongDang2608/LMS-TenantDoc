@@ -73,6 +73,11 @@ export function buildPortalUrl({
 
   let normalizedTargetHost = targetDomain ? stripSchemeAndPath(targetDomain) : '';
 
+  // Single Domain Mode cho Vercel: Bỏ qua việc chuyển đổi Subdomain, giữ nguyên tên miền hiện tại
+  if (typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app')) {
+    return `${protocol}//${currentHost}${safePath}`;
+  }
+
   // Safety Patch: If the backend returns the old hardcoded domain, force-convert it to the current ROOT_DOMAIN.
   if (normalizedTargetHost && normalizedTargetHost.endsWith('.daihoc.io.vn')) {
     const isCurrentlyOnVercel = typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app');
@@ -116,6 +121,11 @@ export function switchSubdomain(newSubdomain: string, path: string = ''): string
   const { hostname, port, protocol } = window.location;
   const safePath = path.startsWith('/') ? path : `/${path}`;
   const portSegment = port ? `:${port}` : '';
+
+  // Single Domain Mode cho Vercel: Bỏ qua việc chuyển đổi Subdomain, giữ nguyên tên miền hiện tại
+  if (hostname.endsWith('.vercel.app')) {
+    return `${protocol}//${host}${safePath}`;
+  }
 
   // 1. Handle Localhost / Local Dev
   if (isConfiguredLocalHost(hostname)) {

@@ -150,18 +150,35 @@ export default function LoginForm({
 
         if (list.length === 1) {
           const ws = list[0];
-          let targetUrl = buildPortalUrl({
-            targetDomain: ws.domain || (ws.subdomain ? `${ws.subdomain}.${ROOT_DOMAIN}` : null),
-            fallbackSubdomain: ws.subdomain,
-            path: roleToPostLoginLanding(role),
-          });
+          
+          // Bắt buộc đổi sang Token của Tenant trước khi vào Dashboard
+          try {
+            const selectRes = await identityRequest.selectWorkspace(ws.tenantId || ws.id, refreshToken ?? '');
+            const { accessToken: newAccessToken, refreshToken: newRefreshToken, tenantBranding } = selectRes.data;
+            
+            setSession(newAccessToken, newRefreshToken);
+            if (tenantBranding) {
+              reduxDispatch(setBranding(tenantBranding));
+            }
 
-          if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost')) {
-            const connector = targetUrl.includes('?') ? '&' : '?';
-            targetUrl = `${targetUrl}${connector}accessToken=${accessToken}${refreshToken ? `&refreshToken=${refreshToken}` : ''}`;
+            let targetUrl = buildPortalUrl({
+              targetDomain: ws.domain || (ws.subdomain ? `${ws.subdomain}.${ROOT_DOMAIN}` : null),
+              fallbackSubdomain: ws.subdomain,
+              path: roleToPostLoginLanding(role),
+            });
+
+            if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.localhost')) {
+              const connector = targetUrl.includes('?') ? '&' : '?';
+              targetUrl = `${targetUrl}${connector}accessToken=${newAccessToken}${newRefreshToken ? `&refreshToken=${newRefreshToken}` : ''}`;
+            }
+            window.location.href = targetUrl;
+            return;
+          } catch (selectErr) {
+            console.error('[LoginForm] Failed to select single workspace automatically:', selectErr);
+            // Nếu lỗi, cứ đi tiếp tới trang chọn workspace để user tự xử lý
+            router.push(PATH_AUTH.selectWorkspace);
+            return;
           }
-          window.location.href = targetUrl;
-          return;
         }
       } catch (wsErr) {
         console.error('[LoginForm] Workspace flow failed:', wsErr);
